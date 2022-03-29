@@ -7,7 +7,7 @@ class Game:
         self.agent = agent
         self.teacher = teacher
         # initialize the game board
-        self.board = [['-' for j in range(i+1)] for i in range(6)]
+        self.board = [['-' for _ in range(i+1)] for i in range(6)]
 
     def playerMove(self):
         if self.teacher is not None:
@@ -16,11 +16,11 @@ class Game:
         else:
             printBoard(self.board)
             while True:
-                move = input("Your move! Please select a column: ")
+                move = input("Your move! Please select a column and row (format \"col,row\"): ")
                 print('\n')
                 try:
                     row, col = int(move[0])-1, int(move[2])-1
-                    self.board[row][col]
+                    self.board[row][col] = 'X'
                 except ValueError:
                     print("INVALID INPUT! Please use the correct format.")
                     continue
@@ -55,11 +55,11 @@ class Game:
                 else:
                     print("RL agent wins!")
             return 1
-        elif self.checkForDraw():
-            if self.teacher is None:
-                printBoard(self.board)
-                print("It's a draw!")
-            return 0
+        # elif self.checkForDraw():
+        #     if self.teacher is None:
+        #         printBoard(self.board)
+        #         print("It's a draw!")
+        #     return 0
         return -1
 
     def playGame(self, player_first):
@@ -122,9 +122,9 @@ class Game:
                     print("Invalid input. Please enter 'y' or 'n'.")
 
 def printBoard(board):
-    print(' 1   2   3   4   5   6 \n')
-    for row in board:
-        print(end = ' ')
+    print('    1   2   3   4   5   6 \n')
+    for i, row in enumerate(board):
+        print(end = f' {i+1}  {"  "*(5-i)}')
         for elt in row:
             print(f'{elt}   ', end='')
         print('\n')

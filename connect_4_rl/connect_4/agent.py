@@ -49,6 +49,7 @@ class Learner(ABC):
                 if board[5-i][6-j] == '-':
                     possible_actions.append((5-i,6-j))
                     break
+                                
         if random.random() < self.eps:
             # Random choose.
             action = random.choice(possible_actions)

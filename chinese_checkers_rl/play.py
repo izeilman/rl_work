@@ -48,7 +48,7 @@ class GameLearning(object):
 
     def beginPlaying(self):
         """ Loop through game iterations with a human player. """
-        print("Welcome to Connect 4. You are 'X' and the computer is 'O'.")
+        print("Welcome to Chinese Checkers. TESTING")
 
         def play_again():
             print("Games played: %i" % self.games_played)

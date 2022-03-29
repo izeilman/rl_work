@@ -28,7 +28,10 @@ class Learner(ABC):
         self.eps = eps
         self.eps_decay = eps_decay
         # Possible actions correspond to the set of all x,y coordinate pairs
-        self.actions = [[(i-1,j) for j in range(i+1)] for i in range(6)]
+        self.actions = []
+        for i in range(6):
+            for j in range(i):
+                self.actions.append((i,j))
         # Initialize Q values to 0 for all state-action pairs.
         # Access value for action a, state s via Q[a][s]
         self.Q = {}
