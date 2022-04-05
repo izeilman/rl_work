@@ -4,7 +4,9 @@ import pickle
 import collections
 import numpy as np
 import random
+from .teacher import possible_actions
 os.chdir('\\'.join(str(__file__).split("\\")[:-1]))
+
 
 class Learner(ABC):
     """
@@ -30,45 +32,48 @@ class Learner(ABC):
         # Possible actions correspond to the set of all x,y coordinate pairs
         self.actions = []
         for i in range(6):
-            for j in range(i):
+            for j in range(i+1):
                 self.actions.append((i,j))
         # Initialize Q values to 0 for all state-action pairs.
         # Access value for action a, state s via Q[a][s]
         self.Q = {}
-        for action in self.actions:
-            self.Q[action] = collections.defaultdict(int)
         # Keep a list of reward received at each episode
         self.rewards = []
 
     def get_action(self, s, board):
 
         # Only consider the allowed actions (empty board spaces)
-        possible_actions = []
-        for i, row in enumerate(board):
-            for j, col in enumerate(row):
-                if col == '-':
-                    possible_actions.append((i,j))
 
         if random.random() < self.eps:
             # Random choose.
-            action = random.choice(possible_actions)
+            actions = possible_actions(board)
+            print(len(actions), flush = True)
+            print(actions, flush = True)
+            selection = random.choice(actions)
         else:
             # Greedy choose.
-            values = np.array([self.Q[a][s] for a in possible_actions])
+            actions = possible_actions(board)
+            for a in actions:
+                if a not in self.Q:
+                    self.Q[a] = collections.defaultdict(int)
+            values = np.array([self.Q[a][s] for a in actions])
             # Find location of max
-            ix_max = np.where(values == np.max(values))[0]
-            if len(ix_max) > 1:
-                # If multiple actions were max, then sample from them
-                ix_select = np.random.choice(ix_max, 1)[0]
+            if len(values) == 0:
+                selection = random.choice(actions)
             else:
-                # If unique max action, select that one
-                ix_select = ix_max[0]
-            action = possible_actions[ix_select]
+                ix_max = np.where(values == np.max(values))[0]
+                if len(ix_max) > 1:
+                    # If multiple actions were max, then sample from them
+                    ix_select = np.random.choice(ix_max, 1)[0]
+                else:
+                    # If unique max action, select that one
+                    ix_select = ix_max[0]
+                selection = actions[ix_select]
 
         # update epsilon; geometric decay
         self.eps *= (1.-self.eps_decay)
 
-        return action
+        return selection
 
     def save(self, path):
         """ Pickle the agent object instance to save the agent's state. """
@@ -110,12 +115,11 @@ class Qlearner(Learner):
         # Update Q(s,a)
         if s_ is not None:
             # hold list of Q values for all a_,s_ pairs. We will access the max later
-            possible_actions = []
-            for i, row in enumerate(board):
-                for j, col in enumerate(row):
-                    if col == '-':
-                        possible_actions.append((i,j))
-            Q_options = [self.Q[action][s_] for action in possible_actions]
+            actions = possible_actions(board)
+            for a in actions:
+                if a not in self.Q:
+                    self.Q[a] = collections.defaultdict(int)
+            Q_options = [self.Q[action][s_] for action in actions]
             # update
             self.Q[a][s] += self.alpha*(r + self.gamma*max(Q_options) - self.Q[a][s])
         else:

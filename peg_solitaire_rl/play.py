@@ -3,9 +3,9 @@ import os
 import pickle
 import sys
 
-from chinese_checkers.agent import Qlearner, SARSAlearner
-from chinese_checkers.teacher import Teacher
-from chinese_checkers.game import Game
+from peg_solitaire.agent import Qlearner, SARSAlearner
+from peg_solitaire.teacher import Teacher
+from peg_solitaire.game import Game
 os.chdir('\\'.join(str(__file__).split("\\")[:-1]))
 
 class GameLearning(object):
