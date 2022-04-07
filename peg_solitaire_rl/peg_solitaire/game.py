@@ -54,6 +54,7 @@ class Game:
                 self.agentMove(prev_action)
                 if self.checkForEnd():
                     reward = 1
+                    printBoard(self.board)
                     break
                 else:
                     reward = 0
