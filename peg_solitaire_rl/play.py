@@ -70,6 +70,8 @@ class GameLearning(object):
             if not play_again():
                 print("OK. Quitting.")
                 break
+            if self.games_played == 10000:
+                break
 
     def beginTeaching(self, episodes):
         """ Loop through game iterations with a teaching agent. """
@@ -96,7 +98,7 @@ if __name__ == "__main__":
                              "for Sarsa-learning.")
     parser.add_argument("-p", "--path", type=str, required=False,
                         help="Specify the path for the agent pickle file. "
-                             "Defaults to q_agent.pkl for AGENT_TYPE='q' and "
+                             "Defaults to q_agent_solitaire.pkl for AGENT_TYPE='q' and "
                              "sarsa_agent.pkl for AGENT_TYPE='s'.")
     parser.add_argument("-l", "--load", action="store_true",
                         help="whether to load trained agent")
@@ -107,7 +109,7 @@ if __name__ == "__main__":
 
     # set default path
     if args.path is None:
-        args.path = 'q_agent.pkl' if args.agent_type == 'q' else 'sarsa_agent.pkl'
+        args.path = 'q_agent_solitaire.pkl' if args.agent_type == 'q' else 'sarsa_agent.pkl'
 
     # initialize game instance
     gl = GameLearning(args)
