@@ -127,7 +127,7 @@ class Game:
             while True:
                 # response = input("Would you like to go first? [y/n]: ")
                 response = 'y'
-                print('')
+                print()
                 if response == 'n' or response == 'no':
                     self.playGame(player_first=False)
                     break

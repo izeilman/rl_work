@@ -3,14 +3,15 @@
 #     for j in range(i+1):
 #         spaces.append((i,j))
 
-from itertools import permutations
+# from itertools import permutations
 
-empty = '-'*21
-boards = []
-for i in range(20):
-    boards.append("X"*(i+1) + empty[:-(i+1)])
+# empty = '-'*21
+# boards = []
+# for i in range(20):
+#     boards.append("X"*(i+1) + empty[:-(i+1)])
 
-# print(set(list(permutations(boards[0]))))
+
+
 # 0
 # 1  2
 # 3  4  5
