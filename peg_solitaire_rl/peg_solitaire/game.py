@@ -1,6 +1,7 @@
 import random
 import numpy as np
 from .teacher import possible_actions
+from time import sleep
 
 class Game:
     def __init__(self, agent, teacher=None):
@@ -53,11 +54,28 @@ class Game:
                 # execute oldAction, observe reward and state
                 self.agentMove(prev_action)
                 if self.checkForEnd():
-                    reward = 1
-                    printBoard(self.board)
+                    # printBoard(self.board)
+                    z = 0
+                    for row in self.board:
+                        for i in row:
+                            if i == 'O':
+                                z += 1
+                    reward = 21 - z
+                    if reward > 18:
+                        # print("Ping")
+                        reward *= 2
                     break
                 else:
-                    reward = 0
+                    z = 0
+                    for row in self.board:
+                        for i in row:
+                            if i == 'O':
+                                z += 1
+                    reward = 21 - z
+                    if reward > 18:
+                        # print("Ping")
+                        reward *= 2
+                # print(reward, flush = True)
                 new_state = getStateKey(self.board)
 
                 # determine new action (epsilon-greedy)
@@ -68,7 +86,7 @@ class Game:
                 prev_state = new_state
                 prev_action = new_action
                 # append reward
-                printBoard(self.board)
+                # printBoard(self.board)
 
             # Game over. Perform final update
             self.agent.update(prev_state, None, prev_action, None, reward, self.board)
@@ -90,14 +108,16 @@ class Game:
                     break
                 else:
                     print("Invalid input. Please enter 'y' or 'n'.")
+    def printBoard(self):
+        print('    1   2   3   4   5   6 \n')
+        for i, row in enumerate(self.board):
+            print(end = f' {i+1}  {"  "*(5-i)}')
+            for elt in row:
+                print(f'{elt}   ', end='')
+            print('\n')
 
-def printBoard(board):
-    print('    1   2   3   4   5   6 \n')
-    for i, row in enumerate(board):
-        print(end = f' {i+1}  {"  "*(5-i)}')
-        for elt in row:
-            print(f'{elt}   ', end='')
-        print('\n')
+
+
 
 def getStateKey(board):
     key = ''

@@ -70,7 +70,9 @@ class GameLearning(object):
             if not play_again():
                 print("OK. Quitting.")
                 break
-            if self.games_played == 10000:
+            if self.games_played == 100000:
+                game.printBoard()
+                # print(self.agent.Q, flush = True)
                 break
 
     def beginTeaching(self, episodes):

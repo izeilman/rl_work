@@ -5,6 +5,7 @@ import collections
 import numpy as np
 import random
 from .teacher import possible_actions
+from time import sleep
 os.chdir('\\'.join(str(__file__).split("\\")[:-1]))
 
 
@@ -47,8 +48,8 @@ class Learner(ABC):
         if random.random() < self.eps:
             # Random choose.
             actions = possible_actions(board)
-            print(len(actions), flush = True)
-            print(actions, flush = True)
+            # print(len(actions), flush = True)
+            # print(actions, flush = True)
             selection = random.choice(actions)
         else:
             # Greedy choose.
@@ -77,11 +78,11 @@ class Learner(ABC):
 
     def save(self, path):
         """ Pickle the agent object instance to save the agent's state. """
-        if os.path.isfile(path):
-            os.remove(path)
-        f = open(path, 'wb')
-        pickle.dump(self, f)
-        f.close()
+        # if os.path.isfile(path):
+        #     os.remove(path)
+        # f = open(path, 'wb')
+        # pickle.dump(self, f)
+        # f.close()
 
     @abstractmethod
     def update(self, s, s_, a, a_, r):
@@ -120,9 +121,13 @@ class Qlearner(Learner):
                 if a not in self.Q:
                     self.Q[a] = collections.defaultdict(int)
             Q_options = [self.Q[action][s_] for action in actions]
+            # print(Q_options)
+            # sleep(1)
             # update
             self.Q[a][s] += self.alpha*(r + self.gamma*max(Q_options) - self.Q[a][s])
         else:
+            # Q_options = [self.Q[action][s_] for action in actions]
+            # print(Q_options)
             # terminal state update
             self.Q[a][s] += self.alpha*(r - self.Q[a][s])
 
