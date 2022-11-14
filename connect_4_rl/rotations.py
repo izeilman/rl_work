@@ -89,20 +89,19 @@ from pickle import dump, load
 import os
 os.chdir('\\'.join(str(__file__).split("\\")[:-1]))
 
-def flip_virt(a):
+def flip_virt(Q):
     z = [6,5,4,3,2,1,0,
          13,12,11,10,9,8,7,
          20,19,18,17,16,15,14,
          27,26,25,24,23,22,21,
          34,33,32,31,30,29,28,
          41,40,39,38,37,36,35]
-    finished = []
-    for state in a:
-        new = ''
-        for i in z:
-             new += state[i-1]
-        finished.append(new)
-    return finished
+    new = {}
+    keys = list(Q.keys())
+    values = list(Q.values())
+    for i, v in enumerate(z):
+        new[keys[i]] = values[v-1]
+    return new
 
 def rotations():
     # distinctBoards = list(validBoards())

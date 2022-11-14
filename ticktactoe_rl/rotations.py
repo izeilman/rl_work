@@ -16,7 +16,6 @@ def validBoards(board="-"*9,player=None):
         yield played                              # return the new state
         if isWin(played): continue                # stop game upon winning
         for nextBoard in validBoards(played,opponent):
-            print(nextBoard)
             yield nextBoard # return boards for subsequent moves
 
 
@@ -51,55 +50,80 @@ def print_statistics():
     print(f"fastCounters: {fastCounters}") # 296 fastest wins by 2nd player (in 3 moves)
 
 
-from pickle import dump, load
-import os
-os.chdir('\\'.join(str(__file__).split("\\")[:-1]))
 
-def rot90(a):
+# def rot90(a):
+#     z = [7,4,1,
+#          8,5,2,
+#          9,6,3]
+#     finished = []
+#     for state in a:
+#         new = ''
+#         for i in z:
+#              new += state[i-1]
+#         finished.append(new)
+#     return finished
+#
+# def flip_horiz(a):
+#     z = [7,8,9,
+#          4,5,6,
+#          1,2,3]
+#     finished = []
+#     for state in a:
+#         new = ''
+#         for i in z:
+#              new += state[i-1]
+#         finished.append(new)
+#     return finished
+#
+# def flip_virt(a):
+#     z = [3,2,1,
+#          6,5,4,
+#          9,8,7]
+#     finished = []
+#     for state in a:
+#         new = ''
+#         for i in z:
+#              new += state[i-1]
+#         finished.append(new)
+#     return finished
+#
+# def rotations():
+#     distinctBoards = list(validBoards())
+#     dump(distinctBoards, open("distinctBoards.pkl", 'wb'))
+#     distinctBoards = load(open("distinctBoards.pkl", 'rb'))
+#     boards_rot90 = rot90(distinctBoards)
+#     boards_rot180 = rot90(boards_rot90)
+#     boards_rot270 = rot90(boards_rot180)
+#     boards_flip_horiz = flip_horiz(distinctBoards)
+#     boards_flip_virt = flip_virt(distinctBoards)
+
+from pickle import load, dump
+import os
+os.chdir(os.path.dirname(__file__))
+
+def rot90(Q):
     z = [7,4,1,
          8,5,2,
          9,6,3]
-    finished = []
-    for state in a:
-        new = ''
-        for i in z:
-             new += state[i-1]
-        finished.append(new)
-    return finished
+    new = {}
+    keys = list(Q.keys())
+    values = list(Q.values())
+    for i, v in enumerate(z):
+        new[keys[i]] = values[v-1]
+    return new
 
-def flip_horiz(a):
-    z = [7,8,9,
-         4,5,6,
-         1,2,3]
-    finished = []
-    for state in a:
-        new = ''
-        for i in z:
-             new += state[i-1]
-        finished.append(new)
-    return finished
 
-def flip_virt(a):
-    z = [3,2,1,
-         6,5,4,
-         9,8,7]
-    finished = []
-    for state in a:
-        new = ''
-        for i in z:
-             new += state[i-1]
-        finished.append(new)
-    return finished
 
-def rotations():
-    # distinctBoards = list(validBoards())
-    # dump(distinctBoards, open("distinctBoards.pkl", 'wb'))
-    distinctBoards = load(open("distinctBoards.pkl", 'rb'))
-    boards_rot90 = rot90(distinctBoards)
-    boards_rot180 = rot90(boards_rot90)
-    boards_rot270 = rot90(boards_rot180)
-    boards_flip_horiz = flip_horiz(distinctBoards)
-    boards_flip_virt = flip_virt(distinctBoards)
+x = load(open("A.pkl", "rb"))
+# print(type(x.Q))
+# print(x.Q.keys())
+# print(list(x.Q.values())[0])
+
+x.Q = rot90(x.Q)
+x.Q = rot90(x.Q)
+x.Q = rot90(x.Q)
+x.Q = rot90(x.Q)
+dump(x, open("K.pkl", "wb"))
 
 # rotations()
-print_statistics()
+# print_statistics()
