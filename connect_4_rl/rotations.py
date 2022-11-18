@@ -42,11 +42,11 @@ def validBoards(board="-"*21,player=None):
         for nextBoard in validBoards(played,opponent):
             yield nextBoard # return boards for subsequent moves
 
-distinctBoards = list(validBoards())  # only look at distinct board states
-with open("merpk.pkl", "wb") as f:
-    dump(distinctBoards, f)
-allStates = len(distinctBoards)
-print(f"distinctBoards: {allStates}")
+# distinctBoards = list(validBoards())  # only look at distinct board states
+# with open("merpk.pkl", "wb") as f:
+#     dump(distinctBoards, f)
+# allStates = len(distinctBoards)
+# print(f"distinctBoards: {allStates}")
 # empty = '-'*42
 # boards = []
 # for i in range(21):
@@ -103,8 +103,37 @@ def flip_virt(Q):
         new[keys[i]] = values[v-1]
     return new
 
-def rotations():
-    # distinctBoards = list(validBoards())
-    # dump(distinctBoards, open("distinctBoards.pkl", 'wb'))
-    distinctBoards = load(open("distinctBoards.pkl", 'rb'))
-    boards_flip_virt = flip_virt(distinctBoards)
+# def rotations():
+#     # distinctBoards = list(validBoards())
+#     # dump(distinctBoards, open("distinctBoards.pkl", 'wb'))
+#     distinctBoards = load(open("distinctBoards.pkl", 'rb'))
+#     boards_flip_virt = flip_virt(distinctBoards)
+
+from math import isclose
+def main():
+    name = "10k"
+    x = load(open(f"{name}.pkl", "rb"))
+    x.Q = flip_virt(x.Q) # flip
+    if not os.path.exists(f"{name}-flipped.pkl"):
+        dump(x, open(f"{name}-flipped.pkl", "wb"))
+
+    x1 = load(open(f"{name}-flipped.pkl", "rb"))
+
+    for b, Q in ({"Flipped":x1.Q}).items():
+        print(b)
+        for i in list(list(x.Q.items())):
+            symmetry = 0
+            count = 0
+            move_option, rewards = i # unpack
+            for board, value in rewards.items():
+                count += 1
+                # if the reward value for the space of the Q tables are similar within an absolute total
+                # Increment/Decrement symmetry value
+                if isclose(Q[move_option][board], value, abs_tol = .3): symmetry += 1
+                else: symmetry -= 1
+            # print(count)
+            if count != 0:
+                print(f"  {move_option} %{(symmetry/count)*100:.2f} similar")
+
+if __name__ == "__main__": 
+    main()

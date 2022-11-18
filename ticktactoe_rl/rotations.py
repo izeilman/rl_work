@@ -51,51 +51,9 @@ def print_statistics():
 
 
 
-# def rot90(a):
-#     z = [7,4,1,
-#          8,5,2,
-#          9,6,3]
-#     finished = []
-#     for state in a:
-#         new = ''
-#         for i in z:
-#              new += state[i-1]
-#         finished.append(new)
-#     return finished
-#
-# def flip_horiz(a):
-#     z = [7,8,9,
-#          4,5,6,
-#          1,2,3]
-#     finished = []
-#     for state in a:
-#         new = ''
-#         for i in z:
-#              new += state[i-1]
-#         finished.append(new)
-#     return finished
-#
-# def flip_virt(a):
-#     z = [3,2,1,
-#          6,5,4,
-#          9,8,7]
-#     finished = []
-#     for state in a:
-#         new = ''
-#         for i in z:
-#              new += state[i-1]
-#         finished.append(new)
-#     return finished
-#
-# def rotations():
-#     distinctBoards = list(validBoards())
-#     dump(distinctBoards, open("distinctBoards.pkl", 'wb'))
-#     distinctBoards = load(open("distinctBoards.pkl", 'rb'))
-#     boards_rot90 = rot90(distinctBoards)
-#     boards_rot180 = rot90(boards_rot90)
-#     boards_rot270 = rot90(boards_rot180)
-#     boards_flip_horiz = flip_horiz(distinctBoards)
-#     boards_flip_virt = flip_virt(distinctBoards)
+# distinctBoards = list(validBoards())
+# dump(distinctBoards, open("distinctBoards.pkl", 'wb'))
+# distinctBoards = load(open("distinctBoards.pkl", 'rb'))
 
 from pickle import load, dump
 import os
@@ -114,16 +72,48 @@ def rot90(Q):
 
 
 
-x = load(open("A.pkl", "rb"))
-# print(type(x.Q))
-# print(x.Q.keys())
-# print(list(x.Q.values())[0])
 
-x.Q = rot90(x.Q)
-x.Q = rot90(x.Q)
-x.Q = rot90(x.Q)
-x.Q = rot90(x.Q)
-dump(x, open("K.pkl", "wb"))
 
-# rotations()
-# print_statistics()
+from math import isclose
+def main():
+    name = "5M"
+    x = load(open(f"q_{name}.pkl", "rb"))
+
+    x.Q = rot90(x.Q) # 90
+    if not os.path.exists(f"{name}-r90.pkl"):
+        dump(x, open(f"{name}-r90.pkl", "wb"))
+
+    x.Q = rot90(x.Q) # 180
+    if not os.path.exists(f"{name}-r180.pkl"):
+        dump(x, open(f"{name}-r180.pkl", "wb"))
+
+    x.Q = rot90(x.Q) # 270
+    if not os.path.exists(f"{name}-r270.pkl"):
+        dump(x, open(f"{name}-r270.pkl", "wb"))
+
+    x.Q = rot90(x.Q) # 360
+    if not os.path.exists(f"{name}-r360.pkl"):
+        dump(x, open(f"{name}-r360.pkl", "wb"))
+
+
+    x1 = load(open(f"{name}-r90.pkl", "rb"))
+    x2 = load(open(f"{name}-r180.pkl", "rb"))
+    x3 = load(open(f"{name}-r270.pkl", "rb"))
+    x4 = load(open(f"{name}-r360.pkl", "rb"))
+
+    for b, Q in ({"90":x1.Q, "180":x2.Q, "270":x3.Q, "360":x4.Q}).items():
+        print("Rotated by", b)
+        for i in list(list(x.Q.items())):
+            symmetry = 0
+            count = 0
+            move_option, rewards = i # unpack
+            for board, value in rewards.items():
+                count += 1
+                # if the reward value for the space of the Q tables are similar within an absolute total
+                # Increment/Decrement symmetry value
+                if isclose(Q[move_option][board], value, abs_tol = .6): symmetry += 1
+                else: symmetry -= 1
+            print(f"  {move_option} %{(symmetry/count)*100:.2f} similar")
+
+if __name__ == "__main__":
+    main()
